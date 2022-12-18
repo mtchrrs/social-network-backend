@@ -46,9 +46,71 @@ const userContr = {
         });
     },
     // create a function to create a new user
+    createUser({ body }, res){
+        // create a user by sending in the data included in the body
+        User.create(body)
+        // then return the data to the app in json
+        .then((dbData) => res.json(dbData))
+        // and catch any errors and return to the app in json
+        .catch((err) => res.status(400).json(err));
+    },
     // create a function to delete a user
+    deleteUser({ params }, res) {
+        // send in the params to delete a user by their id
+        User.findOneAndDelete({ _id: params.id })
+        // make sure that this user exists, if not notify the app
+        .then((dbData) => {
+            if(!dbData){
+                res.status(404).json({ message: "There was no user found by this id"});
+                return;
+            }
+            // else return the user as json data
+            res.json(dbData);
+        })
+        // check to make sure that there are no errors, report if there are
+        .catch((err) => res.status(400).json(err));
+    },
     // create a function to add a friend
+    addFriend({ params }, res) {
+        // send in the params to find the user by id
+        // then use the params to find the id of the friend to add to the user
+        User.findOneAndUpdate(
+            { _id: paranms.id },
+            {$addToSet: { friends: params.friendsId } },
+            { new: true }
+        )
+        // if there is no user, notify the app
+        .then((dbData) => {
+            if(!dbData){
+                res.status(404).json({ message: "There is no user with this id" });
+                return;
+            }
+            // if there is, return the data
+            res.json(dbData);
+        }) 
+        // if there is an error, report it to the app
+        .catch((err) => res.status(400).json(err));
+    },
     // create a function to remove a friend
+    removeFriend({ params }, res) {
+        // send in the params in order to find the user by id and find the friend by their id
+        User.findOneAndUpdate(
+            { _id: params.id },
+            { $pull: { friends: params.friendsId } },
+            { new: true }
+        )
+        // check that this data does exist, if not, notify the app
+        .then((dbData) => {
+            if(!dbData){
+                res.status(404).json({ message: "There is no uder with this id)"});
+                return;
+            }
+            // if the user does exist, notify the app
+            res.json(dbData);
+        })
+        // if there is an error, notify the app
+        .catch((err) => res.status(400).json(err));
+    }
 }
 
 module.exports = userContr;

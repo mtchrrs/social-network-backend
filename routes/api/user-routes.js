@@ -3,7 +3,7 @@ const router = require("express").Router();
 // add all of the functions from the controller
 const { getAllUsers, getUserById, createUser, updateUser, deleteUser, addFriend, removeFriend } = require("../../controllers/user-controller");
 
-// when on the api homepage, allow to get users and create them
+// when on the api users homepage, allow to get users and create them
 router.route("/").get(getAllUsers).post(createUser);
 
 // the following require the id params

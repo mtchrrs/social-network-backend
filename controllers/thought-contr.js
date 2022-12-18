@@ -90,8 +90,56 @@ const thoughtContr = {
         .catch((err) => res.status(400).json(err));
     }, 
     // create a function that deletes a thought
-    // creat a function that adds a reaction
+    deleteThought({ params }, res) {
+        // send in the params in order to delete a thought by id
+        Thought.findOneAndDelete({ _id: params.id })
+            // check if this Id exists, if not, return as json to the app
+            .then((dbData) => {
+            if (!dbData) {
+                res.status(404).json({ message: "There was no thought found with this Id" });
+                return;
+            }
+            // otherwise send the data to the app as a json
+            res.json(dbData);
+        }) 
+        // if there is an error, send as a json to the app
+        .catch((err) => res.status(400).json(err));
+    },
+    // create a function that adds a reaction
+    addReaction({ params, body }, res) {
+        // send in params (to update by id) and the body (to add reaction)
+        // then find a thought by id and add the reaction
+        Thought.findOneAndUpdate(
+          { _id: params.thoughtId },
+          { $addToSet: { reactions: body } },
+          { new: true }
+        )
+        // take this data and check if the thought exists, if not return this to the app
+        .then((dbData) => {
+            if (!dbData) {
+              res.status(404).json({ message: "There was no thought found by with this Id" });
+              return;
+            }
+            // else return the updated thought to the app 
+            res.json(dbData);
+        })
+        // if this doesnt work, send an error
+        .catch((err) => res.json(err));
+    },
     // create a function that deletes a reaction
+    // send the params to update the thought and delete the reaction
+    deleteReaction({ params }, res) {
+        // find a thought by id (that the reaction applied to) and pull the reaction from the thought
+        Thought.findOneAndUpdate(
+          { _id: params.thoughtId }, 
+          { $pull: { reactions: { reactionId: params.reactionId } } },
+          { new: true }
+        )
+        // then report this data back to the app
+        .then((dbData) => res.json(dbData))
+        // if this doesnt work, return the error to the app
+        .catch((err) => res.json(err));
+    },
 };
 
 module.exports = thoughtContr;

@@ -4,7 +4,7 @@ const userContr = {
     // create a function to find all users
     getAllUsers(req, res) {
         // find all users using no filters
-        User.findAll({})
+        User.find({ })
         // then use the populate function to add the thoughts associate with each user to attach
         .populate({
             path: "thoughts",
@@ -54,6 +54,23 @@ const userContr = {
         // and catch any errors and return to the app in json
         .catch((err) => res.status(400).json(err));
     },
+    // update a user by their id
+    updateUser({ params, body }, res) {
+        // send in the params to find the id, and then use the body to update the user
+        User.findOneAndUpdate({ _id: params.id }, body, { new: true })
+        // if there is no user, then let the app know, if there is, let the app know
+        .then((dbData) => {
+            if (!dbData) {
+              res.status(404).json({ message: "No user found" });
+              return;
+            }
+            // return the data to the app using json
+            res.json(dbData);
+        })
+        // then catch the error if there is one and present it to the app
+        .catch((err) => res.status(400).json(err));
+    },
+    
     // create a function to delete a user
     deleteUser({ params }, res) {
         // send in the params to delete a user by their id
@@ -75,7 +92,7 @@ const userContr = {
         // send in the params to find the user by id
         // then use the params to find the id of the friend to add to the user
         User.findOneAndUpdate(
-            { _id: paranms.id },
+            { _id: params.id },
             {$addToSet: { friends: params.friendsId } },
             { new: true }
         )

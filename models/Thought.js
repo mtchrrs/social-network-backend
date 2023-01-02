@@ -18,7 +18,7 @@ const thoughtSchema = new Schema(
             default: Date.now,
         },
         // username -> the user that created the thought
-        username: {
+        userId: {
             type: String,
             required: true,
         },

@@ -4,7 +4,7 @@ const userContr = {
     // create a function to find all users
     getAllUsers(req, res) {
         // find all users using no filters
-        User.findAll({})
+        User.find({ })
         // then use the populate function to add the thoughts associate with each user to attach
         .populate({
             path: "thoughts",
@@ -92,7 +92,7 @@ const userContr = {
         // send in the params to find the user by id
         // then use the params to find the id of the friend to add to the user
         User.findOneAndUpdate(
-            { _id: paranms.id },
+            { _id: params.id },
             {$addToSet: { friends: params.friendsId } },
             { new: true }
         )

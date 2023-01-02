@@ -37,6 +37,7 @@
   To use this application, please follow the following process carefully.
 
   Please watch the below video for a run though of the application in Insomnia
+  https://app.castify.com/view/b24caae6-ed1f-40b7-b702-0fa87fc7ce75
 
 
   ## Contributions
